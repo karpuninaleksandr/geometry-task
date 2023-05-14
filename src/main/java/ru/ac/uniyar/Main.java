@@ -191,7 +191,62 @@ public class Main {
     }
 
     public static void getPointsOfCrossingOfTwoCircles() {
-        return;
+        double x1, x2, y1, y2, r;
+        x1 = getDouble("Enter first circle center's x: ");
+        y1 = getDouble("Enter first circle center's y: ");
+        x2 = getDouble("Enter second circle center's x: ");
+        y2 = getDouble("Enter second circle center's y: ");
+        r = getDouble("Enter radius: ");
+
+        double distanceBetweenCenters = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 -y2) * (y1 - y2));
+        if (distanceBetweenCenters > 2 * r) {
+            System.out.println("Circles do not cross.");
+            return;
+        }
+
+        if (distanceBetweenCenters == 0) {
+            System.out.println("Circles are the same and have infinity of same points.");
+            return;
+        }
+
+        if (distanceBetweenCenters == 2 * r) {
+            System.out.println("Circles cross in x = " + (x1 + x2) / 2 +  ", y = " + (y1 + y2) / 2);
+            return;
+        }
+
+        if (y1 == y2) {
+            double square = r * r - ((x1 + x2) / 2 - x1) * ((x1 + x2) / 2 - x1);
+            double firstY = Math.sqrt(square) + y1;
+            double secondY = -1 * Math.sqrt(square) + y1;
+            System.out.println("Circles cross in x1 = " + (x1 + x2) / 2 + ", y1 = " + firstY + "; x2 = " + (x1 + x2) / 2 +
+                    ", y2 = " + secondY);
+            return;
+        }
+
+        if (x1 == x2) {
+            double square = r * r - ((y1 + y2) / 2 - y1) * ((y1 + y2) / 2 - y1);
+            double firstX = Math.sqrt(square) + x1;
+            double secondX = -1 * Math.sqrt(square) + x1;
+            System.out.println("Circles cross in x1 = " + firstX + ", y1 = " + (y1 + y2) / 2 + "; x2 = " + secondX +
+                    ", y2 = " + (y1 + y2) / 2);
+            return;
+        }
+
+        double xCross = (x1 + x2) / 2;
+        double yCross = (y1 + y2) / 2;
+
+        double k = (y2 - y1) / (x2 - x1);
+        double b = y1 - k * x1;
+
+        k *= - 1;
+
+        double square = r * r - (yCross - y1) * (yCross - y1);
+        double firstX = Math.sqrt(square) + xCross;
+        double secondX = -1 * Math.sqrt(square) + xCross;
+
+
+
+
     }
 
     private static double getDouble(String message) {
