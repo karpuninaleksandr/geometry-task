@@ -1,5 +1,7 @@
 package ru.ac.uniyar;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -7,21 +9,21 @@ public class Main {
 
     public static int getTaskModeData() {
         int mode = 0;
-        System.out.println("There are 5 modes:\n1) Task to check if two segments cross\n2) Task to get distance from " +
-                "point to polygon\n3) Task to check if point is inside of the triangle\n4) Task to check if point is " +
-                "inside the polygon\n5) Task to get points of crossing of two circles");
+        System.out.println("There are 4 modes:\n1) Task to check if two segments cross\n2) Task to check if point is " +
+                "inside of the triangle\n3) Task to check if point is inside the convex polygon\n4) Task to get points " +
+                "of crossing of two circles");
         System.out.print("Enter task mode: ");
         scanner = new Scanner(System.in);
         while (mode == 0) {
             try {
                 mode = Integer.parseInt(scanner.nextLine());
-                if (mode < 1 || mode > 5) {
-                    System.out.println("Mode should be an integer between 1 and 5");
+                if (mode < 1 || mode > 4) {
+                    System.out.println("Mode should be an integer between 1 and 4");
                     System.out.print("Enter task mode: ");
                     mode = 0;
                 }
             } catch (Exception e) {
-                System.out.println("Mode should be an integer between 1 and 5");
+                System.out.println("Mode should be an integer between 1 and 4");
                 System.out.print("Enter task mode: ");
             }
         }
@@ -33,11 +35,9 @@ public class Main {
             case 1:
                 checkIfSegmentsCross();
             case 2:
-                getDistanceFromPointToPolygon();
-            case 3:
                 checkIfPointLaysInsideTriangle();
-            case 4:
-                checkIfPointLaysInsidePolygon();
+            case 3:
+                checkIfPointLaysInsideConvexPolygon();
             default:
                 getPointsOfCrossingOfTwoCircles();
         }
@@ -114,10 +114,6 @@ public class Main {
         System.out.println("Segments don't cross.");
     }
 
-    public static void getDistanceFromPointToPolygon() {
-        return;
-    }
-
     public static void checkIfPointLaysInsideTriangle() {
         double x1, x2, x3, y1, y2, y3, x, y;
         x1 = getDouble("Enter first point of triangle x: ");
@@ -155,8 +151,43 @@ public class Main {
         }
     }
 
-    public static void checkIfPointLaysInsidePolygon() {
-        return;
+    public static void checkIfPointLaysInsideConvexPolygon() {
+        int n = -1;
+        while (n < 0) {
+            n = getInt("Enter amount of points of points of polygon: ");
+            if (n < 3) {
+                System.out.println("You should enter an integer greater than 2");
+                n = -1;
+            }
+        }
+
+        ArrayList<ArrayList<Double>> pointsOfPolygon = new ArrayList<>();
+        for (int i = 0; i < n; ++i)
+            pointsOfPolygon.add(new ArrayList<>(Arrays.asList(getDouble("Enter point's x: "), getDouble("Enter point's y: "))));
+
+
+        double x = getDouble("Enter point's, that needs to be checked, x: ");
+        double y = getDouble("Enter point's, that needs to be checked, y: ");
+
+        for (int i = 0; i < n - 2; ++i)
+            if (!checkIfPointsLayOnTheSameSide(pointsOfPolygon.get(i).get(0), pointsOfPolygon.get(i).get(1),
+                    pointsOfPolygon.get(i + 1).get(0), pointsOfPolygon.get(i + 1).get(1), x, y,
+                    pointsOfPolygon.get(i + 2).get(0), pointsOfPolygon.get(i + 2).get(1))) {
+                System.out.println("Point does not lay inside the polygon.");
+                return;
+            }
+
+        if (!(checkIfPointsLayOnTheSameSide(pointsOfPolygon.get(n - 2).get(0), pointsOfPolygon.get(n - 2).get(1),
+                pointsOfPolygon.get(n - 1).get(0), pointsOfPolygon.get(n - 1).get(1), x, y,
+                pointsOfPolygon.get(0).get(0), pointsOfPolygon.get(0).get(1)) &&
+                checkIfPointsLayOnTheSameSide(pointsOfPolygon.get(n - 1).get(0), pointsOfPolygon.get(n - 1).get(1),
+                pointsOfPolygon.get(0).get(0), pointsOfPolygon.get(0).get(1), x, y,
+                pointsOfPolygon.get(1).get(0), pointsOfPolygon.get(1).get(1)))) {
+            System.out.println("Point does not lay inside the polygon.");
+            return;
+        }
+
+        System.out.println("Point lays inside the polygon.");
     }
 
     public static void getPointsOfCrossingOfTwoCircles() {
@@ -171,6 +202,20 @@ public class Main {
                 toGet = Double.parseDouble(scanner.nextLine());
             } catch (Exception e) {
                 System.out.println("You should enter a number.");
+                System.out.print(message);
+            }
+        }
+        return toGet;
+    }
+
+    private static int getInt(String message) {
+        int toGet = Integer.MAX_VALUE;
+        System.out.print(message);
+        while (toGet == Integer.MAX_VALUE) {
+            try {
+                toGet = Integer.parseInt(scanner.nextLine());
+            } catch (Exception e) {
+                System.out.println("You should enter an integer.");
                 System.out.print(message);
             }
         }
