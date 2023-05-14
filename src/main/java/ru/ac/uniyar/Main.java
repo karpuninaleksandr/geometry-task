@@ -119,7 +119,40 @@ public class Main {
     }
 
     public static void checkIfPointLaysInsideTriangle() {
-        return;
+        double x1, x2, x3, y1, y2, y3, x, y;
+        x1 = getDouble("Enter first point of triangle x: ");
+        y1 = getDouble("Enter first point of triangle y: ");
+        x2 = getDouble("Enter second point of triangle x: ");
+        y2 = getDouble("Enter second point of triangle y: ");
+        x3 = getDouble("Enter third point of triangle x: ");
+        y3 = getDouble("Enter third point of triangle y: ");
+
+        x = getDouble("Enter point's x: ");
+        y = getDouble("Enter point's y: ");
+
+        if (checkIfPointsLayOnTheSameSide(x1, y1, x2, y2, x, y, x3, y3)
+                && checkIfPointsLayOnTheSameSide(x2, y2, x3, y3, x, y, x1, y1)
+                && checkIfPointsLayOnTheSameSide(x1, y1, x3, y3, x, y, x2, y2)) {
+            System.out.println("Point lays inside the triangle.");
+            return;
+        }
+        System.out.println("Point does not lay inside the triangle.");
+    }
+
+    private static boolean checkIfPointsLayOnTheSameSide(double startX, double startY, double endX, double endY,
+                                                         double pointX, double pointY, double checkX, double checkY) {
+        double k, b;
+        if (startX == endX) {
+            return pointX <= startX && checkX < startX || pointX >= startX && checkX > startX || pointX == startX;
+        } else {
+            k = (endY - startY) / (endX - startX);
+            b = startY - k * startX;
+            if (startY == endY) return pointY <= startY && checkY < startY || pointY >= startY && checkY > startY
+                    || pointY == startY;
+            double a = pointY - k * pointX - b;
+            double c = checkY - k * checkX - b;
+            return a <= 0 && c < 0 || a >= 0 && c > 0 || a == 0;
+        }
     }
 
     public static void checkIfPointLaysInsidePolygon() {
